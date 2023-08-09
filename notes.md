@@ -12,3 +12,9 @@
 - Network Address Translation: the external-internal IP addresses thingy. Behind firewall etc.
 
 - `getaddrinfo` sets up data we will need later on. Visible effect: does DNS lookup on url.
+
+- `socket()` gets the file descriptor (an int) for the connection (or smth like that).
+
+- `bind()`: associates the socket with the host machine's local address. That's why server side
+        binds, so that clients can use that address to connect to server. "Assigning a name to a
+        socket"

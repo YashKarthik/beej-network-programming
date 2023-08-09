@@ -1,6 +1,7 @@
 #include <netdb.h>
 #include <netinet/in.h>
 #include <stdio.h>
+#include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -15,8 +16,9 @@ int main() {
   memset(&hints, 0, sizeof hints);
   hints.ai_family = AF_UNSPEC;
   hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
 
-  int status = getaddrinfo("yashkarthik.xyz", "http", &hints, &servinfo);
+  int status = getaddrinfo(NULL, "3490", &hints, &servinfo);
 
   printf("Status: %i\n", status);
   if (status != 0) {
@@ -38,8 +40,21 @@ int main() {
 
     char ipstr[INET6_ADDRSTRLEN];
     inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
-    printf(" %s: %s\n", ipver, ipstr);
+    printf("%s: %s\n", ipver, ipstr);
 
+  }
+
+  int sockfd = socket(servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
+  if (sockfd == -1) {
+    printf("Error while opening socket: %s\n", strerror(errno));
+    return 1;
+  }
+  printf("Socket opened, sockfd: %i\n", sockfd);
+
+  int b = bind(sockfd, servinfo->ai_addr, servinfo->ai_addrlen);
+  if (b == -1) {
+    printf("Error while binding: %s\n", strerror(errno));
+    return 1;
   }
 
   freeaddrinfo(servinfo);
