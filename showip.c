@@ -18,7 +18,7 @@ int main() {
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags = AI_PASSIVE;
 
-  int status = getaddrinfo(NULL, "3490", &hints, &servinfo);
+  int status = getaddrinfo("www.duckduckgo.com", "http", &hints, &servinfo);
 
   printf("Status: %i\n", status);
   if (status != 0) {
@@ -51,11 +51,19 @@ int main() {
   }
   printf("Socket opened, sockfd: %i\n", sockfd);
 
-  int b = bind(sockfd, servinfo->ai_addr, servinfo->ai_addrlen);
-  if (b == -1) {
-    printf("Error while binding: %s\n", strerror(errno));
+  //int b = bind(sockfd, servinfo->ai_addr, servinfo->ai_addrlen);
+  //if (b == -1) {
+  //  printf("Error while binding: %s\n", strerror(errno));
+  //  return 1;
+  //}
+  //printf("Bound: %i", b);
+
+  int c = connect(sockfd, servinfo->ai_addr, servinfo->ai_addrlen);
+  if (c == -1) {
+    printf("Error connecting()ing: %s\n", strerror(errno));
     return 1;
   }
+  printf("Connection established: %i\n", c);
 
   freeaddrinfo(servinfo);
   return 0;
